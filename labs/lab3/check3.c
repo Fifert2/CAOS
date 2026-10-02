@@ -1,5 +1,5 @@
 /* compile via:
-Bash$ gcc -Wall -Werror check2.c
+Bash$ gcc -Wall -Werror check3.c
 Bash$ gcc -E -wall -werror simple.c <== preprocessor 
 */
 
@@ -10,6 +10,7 @@ Bash$ gcc -E -wall -werror simple.c <== preprocessor
 #include <stdarg.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <math.h>
 
 #if 0
 void finder(char n){
@@ -18,10 +19,26 @@ void finder(char n){
    return fibn(n -1) + fibn(n - 2);
       }
 #endif
+
+
+void print_byte(unsigned char byte){
+   int d = (int)byte;
+   for (int i = 7; i >= 0; i--){
+      int pv = pow(2, i);
+      if (d >= pv){
+         d = d - pv;
+         printf("1");
+      }else{
+         printf("0");
+      }
+   }
+  printf("\n");
+}
+
+
+
 int main(int argc, char **argv){
 
-   
-   
    if (argc != 2){ 
       fprintf(stderr, "ERROR: expected argument\n");
       return EXIT_FAILURE;
@@ -33,21 +50,22 @@ int main(int argc, char **argv){
       perror("ERROR: open() failed");
       return EXIT_FAILURE;
    }
+
    signed char byte;
    ssize_t br;
-
-   
    
    while((br = read(fd, &byte, 1)) > 0){
-      unsigned int c = (unsigned char)byte;
+      unsigned int c = (unsigned int)byte;
       if (byte == '\n'){
-         printf("Char '\\n' ==> decimal %d; octal 0%o; hex 0x%x\n",(int)byte, c, c);
+         printf("Char '\\n' ==> decimal %d; octal 0%o; hex 0x%x; binary ",(int)byte, c, c);
+         print_byte((unsigned char)byte);
 
       }else if(isprint((unsigned char)byte)){
-         printf("Char '%c' ==> decimal %d; octal 0%o; hex 0x%x\n", byte, (int)byte, c, c);
-     
+         printf("Char '%c' ==> decimal %d; octal 0%o; hex 0x%x; binary ", byte, (int)byte, c, c);
+         print_byte((unsigned char)byte);
       }else{
-         printf("Char 'non-printable' ==> decimal %d; octal 0%o; hex 0x%x\n",(int)byte, c, c);
+         printf("Char 'non-printable' ==> decimal %d; octal 0%o; hex 0x%x; binary ",(int)byte, c, c);
+         print_byte((unsigned char)byte);
       }
       
    
